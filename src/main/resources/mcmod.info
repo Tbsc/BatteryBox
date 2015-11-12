@@ -1,0 +1,16 @@
+[
+{
+  "modid": "BatteryBox",
+  "name": "BatteryBox",
+  "description": "All it does is add energy cells!",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Tbsc"],
+  "credits": "Me (Tbsc) for coding, and notifyNon on reddit for the idea",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": [CoFHCore]
+}
+]
