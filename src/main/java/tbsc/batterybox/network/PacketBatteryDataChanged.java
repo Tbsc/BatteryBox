@@ -9,6 +9,8 @@ import tbsc.batterybox.battery.TileBatteryBox;
 
 /**
  * @author Tbsc on 10/11/2015, 15:48
+ *
+ * Gets sent whenever the battery box's data (specificly transfer rates) to notify the *server*.
  */
 public class PacketBatteryDataChanged implements IMessage {
 
@@ -49,6 +51,7 @@ public class PacketBatteryDataChanged implements IMessage {
 
     public static class Handler implements IMessageHandler<PacketBatteryDataChanged, IMessage> {
 
+        // Packet is received on server, update tile
         @Override
         public IMessage onMessage(PacketBatteryDataChanged message, MessageContext ctx) {
             TileBatteryBox batteryBox = (TileBatteryBox) Minecraft.getMinecraft().thePlayer.worldObj.getTileEntity(message.x, message.y, message.z);

@@ -29,10 +29,12 @@ public class BBWailaDataProvider implements IWailaDataProvider {
         return list;
     }
 
+    // Right now, all it does is add the stored energy to WAILA
     @Override
     public List<String> getWailaBody(ItemStack itemStack, List<String> list, IWailaDataAccessor iWailaDataAccessor, IWailaConfigHandler iWailaConfigHandler) {
         TileBatteryBox tile = (TileBatteryBox) iWailaDataAccessor.getTileEntity();
-        list.add(String.format("Stored Energy: %s RF", tile.getEnergyStored()));
+        list.clear(); // I don't want the default WAILA energy text, since it doesn't work on my mod
+        list.add(String.format("%sRF / %sRF", tile.getEnergyStored(), tile.getMaxEnergyStored(ForgeDirection.DOWN)));
         list.add(String.format("In: %s RF/t, Out: %s RF/t", tile.getMaxReceive(), tile.getMaxExtract()));
         return list;
     }
@@ -47,6 +49,7 @@ public class BBWailaDataProvider implements IWailaDataProvider {
         return nbtTagCompound;
     }
 
+    // Gets called by WAILA on runtime
     public static void callbackRegister(IWailaRegistrar registrar) {
         registrar.registerBodyProvider(new BBWailaDataProvider(), TileBatteryBox.class);
     }

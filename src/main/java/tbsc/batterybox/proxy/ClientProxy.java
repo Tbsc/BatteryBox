@@ -9,18 +9,20 @@ import tbsc.batterybox.network.PacketBatteryDataChanged;
  */
 public class ClientProxy extends CommonProxy {
 
+    // Send packet from client to server (client->server) of new extract rate (RF/t)
     @Override
     public void sendPacketNewExtract(TileBatteryBox tile, int newMaxExtract) {
-        if (tile.getWorldObj().isRemote)
+        if (tile.getWorldObj().isRemote) // Even through there's proxy, still check it IS called *only* client side
             BatteryBox.network.sendToServer(new PacketBatteryDataChanged(tile.xCoord, tile.yCoord, tile.zCoord,
-                    newMaxExtract, tile.getMaxReceive()));
+                    newMaxExtract, tile.getMaxReceive())); // Send packet
     }
 
+    // Send packet from client to server (client->server) of new receive rate (RF/t)
     @Override
     public void sendPacketNewReceive(TileBatteryBox tile, int newMaxReceive) {
-        if (tile.getWorldObj().isRemote)
+        if (tile.getWorldObj().isRemote) // Even through there's proxy, still check it IS called *only* client side
             BatteryBox.network.sendToServer(new PacketBatteryDataChanged(tile.xCoord, tile.yCoord, tile.zCoord,
-                    tile.getMaxExtract(), newMaxReceive));
+                    tile.getMaxExtract(), newMaxReceive)); // Send packet
     }
 
 }

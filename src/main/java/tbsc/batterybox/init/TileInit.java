@@ -9,7 +9,7 @@ import tbsc.batterybox.battery.TileBatteryBox;
 public class TileInit {
 
     public static void init() {
-        GameRegistry.registerTileEntity(TileBatteryBox.class, "tileBatteryBox");
+        GameRegistry.registerTileEntity(TileBatteryBox.class, "tileBatteryBox"); // Registering tile entity, so it will save
     }
 
 }

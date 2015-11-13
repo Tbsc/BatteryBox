@@ -11,11 +11,13 @@ import tbsc.batterybox.reference.Reference;
  */
 public class GuiHandlerBB implements IGuiHandler {
 
+    // Since the battery boxes aren't containers (they only display, not store items), they have no server side
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         return null;
     }
 
+    // Used to open guis based on the ID gived, IDs are unique to every mod (2 mods can have the id 1, it won't matter)
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         if (ID == Reference.GUI_BBT1)

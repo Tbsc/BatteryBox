@@ -5,7 +5,7 @@ package tbsc.batterybox.util;
  */
 public enum BatteryType {
 
-    COAL(0), IRON(1), GOLD(2), DIAMOND(3), UNKNOWN(9001);
+    COAL(0), IRON(1), GOLD(2), DIAMOND(3), CREATIVE(4), UNKNOWN(9001);
 
     int type;
 
@@ -27,6 +27,8 @@ public enum BatteryType {
                 return BatteryType.GOLD;
             case 3:
                 return BatteryType.DIAMOND;
+            case 4:
+                return BatteryType.CREATIVE;
             default:
                 return BatteryType.UNKNOWN;
         }

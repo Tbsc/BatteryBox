@@ -10,6 +10,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
  */
 public class RecipeInit {
 
+    // Recipes
     public static void init() {
         GameRegistry.addRecipe(new ShapedOreRecipe(BlockInit.batteryBoxT1,
                 "RCR",

@@ -5,10 +5,14 @@ package tbsc.batterybox.util;
  */
 public class BatteryStatsUtil {
 
-    public static BatteryStats getNewBatteryStats(int energy, int maxEnergy, int maxExtract, int maxRecive, int maxDefaultExtract, int maxDefaultReceive) {
-        return new BatteryStats(energy, maxEnergy, maxExtract, maxRecive, maxDefaultExtract, maxDefaultReceive);
-    }
-
+    /**
+     * Used to create {@link BatteryStats} instances, for creation of tile entities.
+     * @param energy Energy the battery stat will hold - typically 0
+     * @param maxEnergy Max energy it will be *able* to hold
+     * @param maxTransfer Amount of energy that will be able to transfer (in/out, RF/t)
+     * @param maxDefaultTrasfer Amount of energy transfer that is the default
+     * @return {@link BatteryStats} with the specified stats
+     */
     public static BatteryStats getNewBatteryStats(int energy, int maxEnergy, int maxTransfer, int maxDefaultTrasfer) {
         return new BatteryStats(energy, maxEnergy, maxTransfer, maxTransfer, maxDefaultTrasfer, maxDefaultTrasfer);
     }
@@ -22,13 +26,17 @@ public class BatteryStatsUtil {
         private int maxDefaultExtract;
         private int maxDefaultReceive;
 
-        public BatteryStats(int energy, int maxEnergy, int maxExtract, int maxReceive, int maxDefaultExtract, int maxDefaultReceive) {
+        private boolean isCreative;
+
+        protected BatteryStats(int energy, int maxEnergy, int maxExtract, int maxReceive, int maxDefaultExtract, int maxDefaultReceive) {
             this.energy = energy;
             this.maxEnergy = maxEnergy;
             this.maxExtract = maxExtract;
             this.maxReceive = maxReceive;
             this.maxDefaultExtract = maxDefaultExtract;
             this.maxDefaultReceive = maxDefaultReceive;
+
+            this.isCreative = energy == -1 || maxEnergy == -1;
         }
 
         public int getEnergy() {

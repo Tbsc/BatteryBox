@@ -30,16 +30,17 @@ public class BatteryBox {
     @Mod.Instance(Reference.MODID)
     public static BatteryBox instance;
 
-    public static Configuration config;
-    public static SimpleNetworkWrapper network;
+    public static Configuration config; // Config, not used rn
+    public static SimpleNetworkWrapper network; // Used for network stuff, mostly packets
 
-    public static CreativeTabs tabBB;
+    public static CreativeTabs tabBB; // BatteryBox's creative tab
 
     @SidedProxy(serverSide = Reference.SERVER_PROXY, clientSide = Reference.CLIENT_PROXY)
-    public static IProxy proxy;
+    public static IProxy proxy; // Proxy, used to call methods *only* on 1 side, depends on the side (client/server)
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        // Init stuff
         config = new Configuration(event.getSuggestedConfigurationFile());
 
         tabBB = new CreativeTabs(Reference.MODID) {
@@ -62,13 +63,14 @@ public class BatteryBox {
         this.network = NetworkRegistry.INSTANCE.newSimpleChannel("batteryBox");
         this.network.registerMessage(PacketBatteryDataChanged.Handler.class, PacketBatteryDataChanged.class, 0, Side.SERVER);
 
+        // Register to waila
         FMLInterModComms.sendMessage("Waila", "register", "tbsc.batterybox.waila.BBWailaDataProvider.callbackRegister");
     }
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
-        NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandlerBB());
-        RecipeInit.init();
+        NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandlerBB()); // Register guis
+        RecipeInit.init(); // Register recipes
     }
 
     public static void syncConfig() {
