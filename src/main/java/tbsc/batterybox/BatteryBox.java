@@ -1,11 +1,17 @@
 package tbsc.batterybox;
 
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.client.event.ConfigChangedEvent;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
+import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
@@ -18,13 +24,18 @@ import tbsc.batterybox.init.BlockInit;
 import tbsc.batterybox.init.RecipeInit;
 import tbsc.batterybox.init.TileInit;
 import tbsc.batterybox.network.PacketBatteryDataChanged;
+import tbsc.batterybox.network.PacketServerConfigSync;
 import tbsc.batterybox.proxy.IProxy;
 import tbsc.batterybox.reference.Reference;
+import tbsc.batterybox.util.ConfigUtil;
+
+import java.util.HashMap;
 
 /**
  * @author Tbsc on 5/11/2015, 20:26
  */
-@Mod(modid = Reference.MODID, name = Reference.NAME, version = Reference.VERION, dependencies = "required-after:CoFHCore")
+@Mod(modid = Reference.MODID, name = Reference.NAME, version = Reference.VERION,
+        dependencies = "required-after:CoFHCore", guiFactory = Reference.GUI_FACTORY)
 public class BatteryBox {
 
     @Mod.Instance(Reference.MODID)
@@ -60,8 +71,10 @@ public class BatteryBox {
         TileInit.init();
         syncConfig();
 
-        this.network = NetworkRegistry.INSTANCE.newSimpleChannel("batteryBox");
-        this.network.registerMessage(PacketBatteryDataChanged.Handler.class, PacketBatteryDataChanged.class, 0, Side.SERVER);
+        FMLCommonHandler.instance().bus().register(instance);
+        network = NetworkRegistry.INSTANCE.newSimpleChannel("batteryBox");
+        network.registerMessage(PacketBatteryDataChanged.Handler.class, PacketBatteryDataChanged.class, 0, Side.SERVER);
+        network.registerMessage(PacketServerConfigSync.Handler.class, PacketServerConfigSync.class, 1, Side.CLIENT);
 
         // Register to waila
         FMLInterModComms.sendMessage("Waila", "register", "tbsc.batterybox.waila.BBWailaDataProvider.callbackRegister");
@@ -78,12 +91,26 @@ public class BatteryBox {
             // Load config
             config.load();
 
-            // Read props from config, when there will be any
+            // Read props from config
+            ConfigUtil.readConfig(config);
         } catch (Exception e) {
             // Exception
         } finally {
             // Save props to config
             if (config.hasChanged()) config.save();
+        }
+    }
+
+    @SubscribeEvent
+    public void onConfigChanged(ConfigChangedEvent.PostConfigChangedEvent event) {
+        if (event.modID.equalsIgnoreCase(Reference.MODID))
+            syncConfig();
+    }
+
+    @SubscribeEvent
+    public void onPlayerJoinServer(PlayerEvent.PlayerLoggedInEvent event) {
+        if (!event.player.worldObj.isRemote) {
+
         }
     }
 

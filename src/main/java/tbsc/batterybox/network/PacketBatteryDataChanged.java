@@ -5,6 +5,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
+import net.minecraft.server.MinecraftServer;
 import tbsc.batterybox.battery.TileBatteryBox;
 
 /**
@@ -54,7 +55,7 @@ public class PacketBatteryDataChanged implements IMessage {
         // Packet is received on server, update tile
         @Override
         public IMessage onMessage(PacketBatteryDataChanged message, MessageContext ctx) {
-            TileBatteryBox batteryBox = (TileBatteryBox) Minecraft.getMinecraft().thePlayer.worldObj.getTileEntity(message.x, message.y, message.z);
+            TileBatteryBox batteryBox = (TileBatteryBox) MinecraftServer.getServer().getEntityWorld().getTileEntity(message.x, message.y, message.z);
             batteryBox.setMaxExtract(message.newMaxExtract);
             batteryBox.setMaxReceive(message.newMaxReceive);
             return null;

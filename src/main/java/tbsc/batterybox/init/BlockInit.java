@@ -3,6 +3,7 @@ package tbsc.batterybox.init;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import tbsc.batterybox.battery.BlockBatteryBox;
+import tbsc.batterybox.battery.ItemBlockBatteryBox;
 import tbsc.batterybox.util.BatteryType;
 
 /**
@@ -25,11 +26,11 @@ public class BlockInit {
         batteryBoxCreative = new BlockBatteryBox(BatteryType.CREATIVE);
 
         // Register blocks
-        GameRegistry.registerBlock(batteryBoxT1, "batteryBoxT1");
-        GameRegistry.registerBlock(batteryBoxT2, "batteryBoxT2");
-        GameRegistry.registerBlock(batteryBoxT3, "batteryBoxT3");
-        GameRegistry.registerBlock(batteryBoxT4, "batteryBoxT4");
-        GameRegistry.registerBlock(batteryBoxCreative, "batteryBoxCreative");
+        GameRegistry.registerBlock(batteryBoxT1, ItemBlockBatteryBox.class, "batteryBoxT1");
+        GameRegistry.registerBlock(batteryBoxT2, ItemBlockBatteryBox.class, "batteryBoxT2");
+        GameRegistry.registerBlock(batteryBoxT3, ItemBlockBatteryBox.class, "batteryBoxT3");
+        GameRegistry.registerBlock(batteryBoxT4, ItemBlockBatteryBox.class, "batteryBoxT4");
+        GameRegistry.registerBlock(batteryBoxCreative, ItemBlockBatteryBox.class, "batteryBoxCreative");
 
         // BatteryBox tier 1 OreDictionary registration
         OreDictionary.registerOre("batteryBox", batteryBoxT1);

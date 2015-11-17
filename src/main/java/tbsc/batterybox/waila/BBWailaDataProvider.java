@@ -34,7 +34,7 @@ public class BBWailaDataProvider implements IWailaDataProvider {
     public List<String> getWailaBody(ItemStack itemStack, List<String> list, IWailaDataAccessor iWailaDataAccessor, IWailaConfigHandler iWailaConfigHandler) {
         TileBatteryBox tile = (TileBatteryBox) iWailaDataAccessor.getTileEntity();
         list.clear(); // I don't want the default WAILA energy text, since it doesn't work on my mod
-        list.add(String.format("%sRF / %sRF", tile.getEnergyStored(), tile.getMaxEnergyStored(ForgeDirection.DOWN)));
+        list.add(String.format("%s RF / %s RF", tile.getEnergyStored(), tile.getCapacity()));
         list.add(String.format("In: %s RF/t, Out: %s RF/t", tile.getMaxReceive(), tile.getMaxExtract()));
         return list;
     }

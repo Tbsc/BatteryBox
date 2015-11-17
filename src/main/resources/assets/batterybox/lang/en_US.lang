@@ -1,4 +1,17 @@
-tile.batterybox:batteryBoxT1.name=Battery Box Tier 1
-tile.batterybox:batteryBoxT2.name=Battery Box Tier 2
-tile.batterybox:batteryBoxT3.name=Battery Box Tier 3
-tile.batterybox:batteryBoxT4.name=Battery Box Tier 4
+tile.batterybox:batteryBoxT1.name=Coal Battery Box
+tile.batterybox:batteryBoxT2.name=Iron Battery Box
+tile.batterybox:batteryBoxT3.name=Gold Battery Box
+tile.batterybox:batteryBoxT4.name=Diamond Battery Box
+tile.batterybox:batteryBoxCreative.name=Creative Battery Box
+
+batterybox.name.tier1=Coal Battery Box
+batterybox.name.tier2=Iron Battery Box
+batterybox.name.tier3=Gold Battery Box
+batterybox.name.tier4=Diamond Battery Box
+batterybox.name.tier5=Creative Battery Box
+
+batterybox.cfg.tooltip.t1=Tier 1 Battery Box Config
+batterybox.cfg.tooltip.t2=Tier 2 Battery Box Config
+batterybox.cfg.tooltip.t3=Tier 3 Battery Box Config
+batterybox.cfg.tooltip.t4=Tier 4 Battery Box Config
+batterybox.cfg.tooltip.t5=Tier 5 Battery Box Config - not really used, it will still output at infinitely

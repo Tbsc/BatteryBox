@@ -1,12 +1,15 @@
 package tbsc.batterybox.battery;
 
 import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyConnection;
+import cpw.mods.fml.common.FMLLog;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.util.ForgeDirection;
 import tbsc.batterybox.util.BatteryStatsUtil;
 import tbsc.batterybox.util.BatteryType;
@@ -16,9 +19,11 @@ import java.util.List;
 /**
  * @author Tbsc on 5/11/2015, 20:38
  */
-public class TileBatteryBox extends TileBatteryBoxBB {
+public class TileBatteryBox extends TileBatteryBoxBB implements IEnergyConnection {
 
-    // Tile entity's data
+    /**
+     * Tile entity's data as I'm *not* using {@link EnergyStorage}
+     */
     private BatteryType type;
     protected int maxDefaultExtract;
     protected int maxDefaultReceive;
@@ -27,6 +32,8 @@ public class TileBatteryBox extends TileBatteryBoxBB {
     protected int maxReceive;
 
     protected int energy;
+
+    public TileBatteryBox() {}
 
     // Data init
     public TileBatteryBox(BatteryStatsUtil.BatteryStats batteryStats, BatteryType type) {
@@ -37,15 +44,14 @@ public class TileBatteryBox extends TileBatteryBoxBB {
         this.maxExtract = batteryStats.getMaxExtract();
         this.maxReceive = batteryStats.getMaxReceive();
 
-        this.storage = new EnergyStorage(capacity, maxExtract, maxReceive); // for the sake of WAILA
+        this.storage = new EnergyStorage(this.capacity, this.maxExtract, this.maxReceive);
     }
 
     @Override
     public void updateEntity() {
-        /*
-        I don't have a reason to update the tile entity on tick, instead I'm doing it when an action is occuring, to
-        save system resources (cuz doing stuff on every *tick* is system-intensive!)
-        */
+        storage.setEnergyStored(this.energy);
+        storage.setMaxExtract(this.maxExtract);
+        storage.setMaxReceive(this.maxReceive);
     }
 
     @Override
@@ -88,39 +94,48 @@ public class TileBatteryBox extends TileBatteryBoxBB {
         return energyExtracted;
     }
 
-    // Get NBT data, and reassign the tile's data to the 'newly' saved NBT data
+    /**
+     * Get NBT data, and reassign the tile's data to the 'newly' saved NBT data
+     */
     @Override
     public void readFromNBT(NBTTagCompound tag) {
-        super.readFromNBT(tag);
-
         this.type = BatteryType.getFromId(tag.getInteger("BatteryType"));
 
-        int energyStored = tag.getInteger("EnergyLevel");
-        this.energy = energyStored;
+        this.energy = tag.getInteger("EnergyLevel");
         this.maxExtract = tag.getInteger("MaxExtract");
         this.maxReceive = tag.getInteger("MaxReceive");
         this.capacity = tag.getInteger("Capacity");
+
+        FMLLog.info("%s capacity, %s maxextract, %s maxreceive, %s energy", capacity, maxExtract, maxReceive, energy);
+
+        super.readFromNBT(tag);
     }
 
-    // Write data to NBT, for usage on next load
+    /**
+     * Write data to NBT, for usage on next load
+     */
     @Override
     public void writeToNBT(NBTTagCompound tag) {
-        super.writeToNBT(tag);
-
         tag.setInteger("BatteryType", type.getType());
         tag.setInteger("EnergyLevel", energy);
         tag.setInteger("MaxExtract", maxExtract);
         tag.setInteger("MaxReceive", maxReceive);
         tag.setInteger("Capacity", capacity);
+
+        super.writeToNBT(tag);
     }
 
-    // It will accept energy from any side, as I don't have any IO configuration
+    /**
+     * It will accept energy from any side, as I don't have any IO configuration
+     */
     @Override
     public boolean canConnectEnergy(ForgeDirection from) {
         return true;
     }
 
-    // Packet used when updating tile entity
+    /**
+     * Packet used when updating tile entity
+     */
     @Override
     public Packet getDescriptionPacket() {
         NBTTagCompound nbt = new NBTTagCompound();
@@ -128,7 +143,9 @@ public class TileBatteryBox extends TileBatteryBoxBB {
         return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 7, nbt);
     }
 
-    // Gets called when the above detailed packet gets received
+    /**
+     * Gets called when the above detailed packet gets received
+     */
     @Override
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
         NBTTagCompound nbt = pkt.func_148857_g();
@@ -141,10 +158,18 @@ public class TileBatteryBox extends TileBatteryBoxBB {
         this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord); // Mark the block for update, so it will be "reloaded"
     }
 
-    @Override
-    public void onChunkUnload() { // Write nbt data when unloading the chunk to save data
-        NBTTagCompound nbt = new NBTTagCompound();
-        writeToNBT(nbt);
+    public int getTypeColorInHex() {
+        if (type == BatteryType.COAL)
+            return 0x4D4D4D;
+        if (type == BatteryType.IRON)
+            return 0x8C8C8C;
+        if (type == BatteryType.GOLD)
+            return 0xFFFF55;
+        if (type == BatteryType.DIAMOND)
+            return 0x55FFFF;
+        if (type == BatteryType.CREATIVE)
+            return 0xFF55FF;
+        return 0x000000;
     }
 
     /* Energy Handling */
@@ -175,6 +200,14 @@ public class TileBatteryBox extends TileBatteryBoxBB {
 
     public int getEnergyStored() {
         return energy;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public int getType() {
+        return type.getType();
     }
 
 }
